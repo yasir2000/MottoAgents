@@ -1,0 +1,17 @@
+[registry."docker.io"]
+mirrors = ["https://registry-1.docker.io"]
+
+[registry."docker.io".mirrors."https://registry-1.docker.io"]
+http = true
+
+[worker.oci]
+max-parallelism = 4
+gc = true
+
+[worker.containerd]
+gc = true
+gc-keepstorage = 20000
+
+[grpc]
+max-recv-message-size = 104857600
+max-send-message-size = 104857600 
