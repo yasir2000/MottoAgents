@@ -10,8 +10,8 @@ from pathlib import Path
 
 
 def get_project_root():
-    """逐级向上寻找项目根目录"""
-    current_path = Path.cwd()
+"""Search for the project root directory step by step"""
+current_path = Path.cwd()
     while True:
         if (current_path / '.git').exists() or \
            (current_path / '.project_root').exists() or \
