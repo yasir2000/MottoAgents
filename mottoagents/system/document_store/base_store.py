@@ -11,7 +11,7 @@ from pathlib import Path
 from mottoagents.system.config import Config
 
 class BaseStore(ABC):
-    """FIXME: consider add_index, set_index and think 颗粒度"""
+    """FIXME: consider add_index, set_index and think about granularity"""
 
     @abstractmethod
     def search(self, query, *args, **kwargs):

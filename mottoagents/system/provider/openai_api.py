@@ -69,7 +69,7 @@ class Costs(NamedTuple):
 
 
 class CostManager(metaclass=Singleton):
-    """计算使用接口的开销"""
+    """Calculate API usage costs"""
     def __init__(self):
         self.total_prompt_tokens = 0
         self.total_completion_tokens = 0
@@ -124,7 +124,7 @@ class CostManager(metaclass=Singleton):
         return self.total_cost
 
     def get_costs(self) -> Costs:
-        """获得所有开销"""
+        """Get all costs"""
         return Costs(self.total_prompt_tokens, self.total_completion_tokens, self.total_cost, self.total_budget)
 
 
@@ -232,6 +232,7 @@ class OpenAIGPTAPI(BaseGPTAPI, RateLimiter):
         return self.get_choice_text(rsp)
 
     def _calc_usage(self, messages: list[dict], rsp: str) -> dict:
+        """Calculate API usage costs"""
         usage = {}
         prompt_tokens = count_message_tokens(messages, self.model)
         completion_tokens = count_string_tokens(rsp, self.model)
@@ -240,7 +241,7 @@ class OpenAIGPTAPI(BaseGPTAPI, RateLimiter):
         return usage
 
     async def acompletion_batch(self, batch: list[list[dict]]) -> list[dict]:
-        """返回完整JSON"""
+        """Return complete JSON"""
         split_batches = self.split_batches(batch)
         all_results = []
 
@@ -256,7 +257,7 @@ class OpenAIGPTAPI(BaseGPTAPI, RateLimiter):
         return all_results
 
     async def acompletion_batch_text(self, batch: list[list[dict]]) -> list[str]:
-        """仅返回纯文本"""
+        """Return plain text only"""
         raw_results = await self.acompletion_batch(batch)
         results = []
         for idx, raw_result in enumerate(raw_results, start=1):

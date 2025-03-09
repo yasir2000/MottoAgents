@@ -80,6 +80,6 @@ class FaissStore(LocalStore):
 
 if __name__ == '__main__':
     faiss_store = FaissStore(DATA_PATH / 'qcs/qcs_4w.json')
-    logger.info(faiss_store.search('油皮洗面奶'))
-    faiss_store.add([f'油皮洗面奶-{i}' for i in range(3)])
-    logger.info(faiss_store.search('油皮洗面奶'))
+    logger.info(faiss_store.search('facial cleanser for oily skin'))
+    faiss_store.add([f'facial cleanser for oily skin-{i}' for i in range(3)])
+    logger.info(faiss_store.search('facial cleanser for oily skin'))

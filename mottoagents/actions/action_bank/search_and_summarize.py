@@ -59,7 +59,7 @@ SEARCH_AND_SUMMARIZE_SALES_SYSTEM = """## Requirements
 1. Please summarize the latest dialogue based on the reference information (secondary) and dialogue history (primary). Do not include text that is irrelevant to the conversation.
 - The context is for reference only. If it is irrelevant to the user's search request history, please reduce its reference and usage.
 2. If there are citable links in the context, annotate them in the main text in the format [main text](citation link). If there are none in the context, do not write links.
-3. The reply should be graceful, clear, non-repetitive, smoothly written, and of moderate length, in Simplified Chinese.
+3. The reply should be graceful, clear, non-repetitive, smoothly written, and of moderate length, in English.
 
 # Example
 ## Reference Information
