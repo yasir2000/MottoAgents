@@ -121,7 +121,7 @@ def safe_google_results(results: str | list) -> str:
     """
     if isinstance(results, list):
         safe_message = json.dumps(
-            # FIXME: # .encode("utf-8", "ignore") 这里去掉了，但是AutoGPT里有，很奇怪
+            # FIXME: # .encode("utf-8", "ignore") was removed here, but it exists in AutoGPT, which is strange
             [result for result in results]
         )
     else:

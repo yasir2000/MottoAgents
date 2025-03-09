@@ -146,7 +146,7 @@ class Role:
     async def _think(self) -> None:
         """思考要做什么，决定下一步的action"""
         if len(self._actions) == 1:
-            # 如果只有一个动作，那就只能做这个
+            # If there's only one action, that's the only option
             self._set_state(0)
             return
         prompt = self._get_prefix()
@@ -198,7 +198,7 @@ class Role:
     async def _publish_message(self, msg):
         """如果role归属于env，那么role的消息会向env广播"""
         if not self._rc.env:
-            # 如果env不存在，不发布消息
+            # If env doesn't exist, don't publish message
             return
         await self._rc.env.publish_message(msg)
 
@@ -233,10 +233,10 @@ class Role:
             if isinstance(message, list):
                 self.recv(Message("\n".join(message)))
         elif not await self._observe():
-            # 如果没有任何新信息，挂起等待
+            # If there's no new information, suspend and wait
             logger.debug(f"{self._setting}: no news. waiting.")
             return
         rsp = await self._react()
-        # 将回复发布到环境，等待下一个订阅者处理
+        # Publish the reply to the environment, wait for the next subscriber to process
         await self._publish_message(rsp)
         return rsp

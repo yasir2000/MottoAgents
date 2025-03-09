@@ -86,7 +86,7 @@ class Config(metaclass=Singleton):
             if not _yaml_file.exists():
                 continue
 
-            # 加载本地 YAML 文件
+            # Load local YAML file
             with open(_yaml_file, "r", encoding="utf-8") as file:
                 yaml_data = yaml.safe_load(file)
                 if not yaml_data:
@@ -98,7 +98,7 @@ class Config(metaclass=Singleton):
         return self._configs.get(*args, **kwargs)
 
     def get(self, key, *args, **kwargs):
-        """从config/key.yaml / config/config.yaml / env三处找值，找不到报错"""
+        """Find the value from config/key.yaml / config/config.yaml / env, if not found, raise an error"""
         value = self._get(key, *args, **kwargs)
         if value is None:
             raise ValueError(f"Key '{key}' not found in environment variables or in the YAML file")

@@ -24,8 +24,7 @@ from .system.memory import Memory
 from .system.schema import Message
 
 class Environment(BaseModel):
-    """环境，承载一批角色，角色可以向环境发布消息，可以被其他角色观察到"""
-
+    """Environment, carrying a group of roles, roles can publish messages to the environment, which can be observed by other roles""""
     roles: dict[str, Role] = Field(default_factory=dict)
     memory: Memory = Field(default_factory=Memory)
     history: str = Field(default='')
@@ -45,17 +44,17 @@ class Environment(BaseModel):
 
 
     def add_role(self, role: Role):
-        """增加一个在当前环境的Role"""
+        """Add a role to the current environment"""
         role.set_env(self)
         self.roles[role.profile] = role
 
     def add_roles(self, roles: Iterable[Role]):
-        """增加一批在当前环境的Role"""
+        """Add a batch of roles to the current environment"""
         for role in roles:
             self.add_role(role)
 
     def _parser_roles(self, text):
-        """解析添加的Roles"""
+        """Parse the added Roles"""
         agents = re.findall('{[\s\S]*?}', text) # re.findall('{{.*}}', agents)
         agents_args = []
         for agent in agents:
@@ -70,7 +69,7 @@ class Environment(BaseModel):
         return agents_args
     
     def _parser_plan(self, context):
-        """解析生成的计划Plan"""
+        """Parse the generated plan"""
         plan_context = re.findall('## Execution Plan([\s\S]*?)##', str(context))[0]
         steps = [v.split("\n")[0] for v in re.split("\n\d+\. ", plan_context)[1:]]
         print('---------------Steps---------------')
@@ -81,7 +80,7 @@ class Environment(BaseModel):
         return steps
     
     def create_roles(self, plan: list, args: dict):
-        """创建Role""" 
+        """Create Role""" 
 
         requirement_type = type('Requirement_Group', (Requirement,), {})
         self.add_role(Group(roles=args, steps=plan, watch_actions=[Requirement,requirement_type],  proxy=self.proxy, serpapi_api_key=self.serpapi_key, llm_api_key=self.llm_api_key))
@@ -125,7 +124,7 @@ class Environment(BaseModel):
         # self.add_role(ActionObserver(steps=plan, watch_actions=init_actions, init_actions=watch_actions, proxy=self.proxy, llm_api_key=self.llm_api_key))
 
     async def publish_message(self, message: Message):
-        """向当前环境发布信息"""
+        """Publish information to the current environment"""
         # self.message_queue.put(message)
         self.memory.add(message)
         self.history += f"\n{message}"
@@ -179,7 +178,7 @@ class Environment(BaseModel):
 
 
     async def run(self, k=1):
-        """处理一次所有Role的运行"""
+        """Process the running of all roles once"""
         old_roles = []
         for _ in range(k):
             futures = []
@@ -203,9 +202,9 @@ class Environment(BaseModel):
                 await asyncio.gather(*futures)
 
     def get_roles(self) -> dict[str, Role]:
-        """获得环境内的所有Role"""
+        """Get all roles in the environment"""
         return self.roles
 
     def get_role(self, name: str) -> Role:
-        """获得环境内的指定Role"""
+        """Get the specified Role in the environment"""
         return self.roles.get(name, None)

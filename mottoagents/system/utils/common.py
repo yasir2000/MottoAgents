@@ -29,19 +29,19 @@ class OutputParser:
 
     @classmethod
     def parse_blocks(cls, text: str):
-        # 首先根据"##"将文本分割成不同的block
+        # First split the text into different blocks based on "##"
         blocks = text.split("##")
 
-        # 创建一个字典，用于存储每个block的标题和内容
+        # Create a dictionary to store the title and content of each block
         block_dict = {}
 
-        # 遍历所有的block
+        # Iterate through all blocks
         for block in blocks:
-            # 如果block不为空，则继续处理
+            # If the block is not empty, continue processing
             if block.strip() != "":
-                # 将block的标题和内容分开，并分别去掉前后的空白字符
+                # Split the block's title and content, and remove whitespace from both ends
                 block_title, block_content = block.split("\n", 1)
-                # LLM可能出错，在这里做一下修正
+                # LLM might make mistakes, fix it here
                 if block_title[-1] == ":":
                     block_title = block_title[:-1]
                 block_dict[block_title.strip()] = block_content.strip()
@@ -85,13 +85,13 @@ class OutputParser:
         block_dict = cls.parse_blocks(data)
         parsed_data = {}
         for block, content in block_dict.items():
-            # 尝试去除code标记
+            # Try to remove code markers
             try:
                 content = cls.parse_code(text=content)
             except Exception:
                 pass
 
-            # 尝试解析list
+            # Try to parse list
             try:
                 content = cls.parse_file_list(text=content)
             except Exception:
@@ -104,7 +104,7 @@ class OutputParser:
         block_dict = cls.parse_blocks(data)
         parsed_data = {}
         for block, content in block_dict.items():
-            # 尝试去除code标记
+            # Try to remove code markers
             try:
                 content = cls.parse_code(text=content)
             except Exception:
@@ -115,14 +115,14 @@ class OutputParser:
             else:
                 typing = typing_define
             if typing == List[str] or typing == List[Tuple[str, str]]:
-                # 尝试解析list
+                # Try to parse list
                 try:
                     content = cls.parse_file_list(text=content)
                 except Exception:
                     pass
-            # TODO: 多余的引号去除有风险，后期再解决
+            # TODO: Removing extra quotes is risky, will solve it later
             # elif typing == str:
-            #     # 尝试去除多余的引号
+            #     # Try to remove extra quotes
             #     try:
             #         content = cls.parse_str(text=content)
             #     except Exception:
@@ -143,17 +143,17 @@ class CodeParser:
 
     @classmethod
     def parse_blocks(cls, text: str):
-        # 首先根据"##"将文本分割成不同的block
+        # First split the text into different blocks based on "##"
         blocks = text.split("##")
 
-        # 创建一个字典，用于存储每个block的标题和内容
+        # Create a dictionary to store the title and content of each block
         block_dict = {}
 
-        # 遍历所有的block
+        # Iterate through all blocks
         for block in blocks:
-            # 如果block不为空，则继续处理
+            # If the block is not empty, continue processing
             if block.strip() != "":
-                # 将block的标题和内容分开，并分别去掉前后的空白字符
+                # Split the block's title and content, and remove whitespace from both ends
                 block_title, block_content = block.split("\n", 1)
                 block_dict[block_title.strip()] = block_content.strip()
 

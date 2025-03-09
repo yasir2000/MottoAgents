@@ -87,7 +87,7 @@ class Engineer(Role):
         try:
             shutil.rmtree(workspace)
         except FileNotFoundError:
-            pass  # 文件夹不存在，但我们不在意
+            pass  # Directory doesn't exist, but we don't care
         workspace.mkdir(parents=True, exist_ok=True)
 
     def write_file(self, filename: str, code: str):
@@ -157,7 +157,7 @@ class Engineer(Role):
         code_msg_all = [] # gather all code info, will pass to qa_engineer for tests later
         for todo in self.todos:
             """
-            # 从历史信息中挑选必须的信息，以减少prompt长度（人工经验总结）
+            # Select essential information from history to reduce prompt length (manually summarized experience)
             1. Architect全部
             2. ProjectManager全部
             3. 是否需要其他代码（暂时需要）？
@@ -168,7 +168,7 @@ class Engineer(Role):
             for m in msg:
                 context.append(m.content)
             context_str = "\n".join(context)
-            # 编写code
+            # Write code
             code = await WriteCode(llm=self._llm).run(
                 context=context_str,
                 filename=todo
