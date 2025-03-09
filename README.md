@@ -1,7 +1,7 @@
 # MottoAgents: A Framework for Automatic Agent Generation by Intents
 
 <p align="center">
-<a href="https://github.com/yasir2000/MottoAgents"><img src="docs/resources/logo-mottoagents.jpg" alt="mottoagents logo: A Framework for Automatic Agent Generation." width="150px"></a>
+<a href="https://github.com/yasir2000/MottoAgents"><img src="docs/resources/logo-mottoagents.jpg" alt="mottoagents logo: A Framework for Automatic Agent Generation." width="250px"></a>
 </p>
 
 <p align="center">
