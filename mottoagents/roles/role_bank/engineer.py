@@ -219,10 +219,10 @@ class Engineer(Role):
         for todo in self.todos:
             """
             # Select essential information from history to reduce prompt length (manually summarized experience)
-            1. Architect全部
-            2. ProjectManager全部
-            3. 是否需要其他代码（暂时需要）？
-            TODO:目标是不需要。在任务拆分清楚后，根据设计思路，不需要其他代码也能够写清楚单个文件，如果不能则表示还需要在定义的更清晰，这个是代码能够写长的关键
+            1. All Architect information
+            2. All ProjectManager information
+            3. Do we need other code (currently yes)?
+            TODO: The goal is no. After clear task breakdown, based on design thinking, we should be able to write individual files clearly without other code. If not, it indicates we need clearer definitions. This is key to writing longer code.
             """
             context = []
             msg = self._rc.memory.get_by_actions([WriteDesign, WriteTasks, WriteCode])

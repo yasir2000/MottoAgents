@@ -59,7 +59,7 @@ class FaissStore(LocalStore):
             return str(sep.join([f"{x.page_content}" for x in rsp]))
 
     def write(self):
-        """根据用户给定的Document（JSON / XLSX等）文件，进行index与库的初始化"""
+        """Initialize index and database based on user-provided Document (JSON / XLSX etc.) file"""
         if not self.raw_data.exists():
             raise FileNotFoundError
         doc = Document(self.raw_data, self.content_col, self.meta_col)
@@ -70,11 +70,11 @@ class FaissStore(LocalStore):
         return self.store
 
     def add(self, texts: list[str], *args, **kwargs) -> list[str]:
-        """FIXME: 目前add之后没有更新store"""
+        """FIXME: Store is not updated after add operation"""
         return self.store.add_texts(texts)
 
     def delete(self, *args, **kwargs):
-        """目前langchain没有提供del接口"""
+        """Currently langchain does not provide delete interface"""
         raise NotImplementedError
 
 
