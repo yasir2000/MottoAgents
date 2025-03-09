@@ -470,4 +470,64 @@ pre {
 .step-number-completed {
     background-color: #3ad692;
 }
+.api-form select {
+    margin-bottom: 10px;
+    border-radius: 5px;
+    border: 1px solid #ced4da;
+}
+
+.api-form select:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+.api-form input {
+    margin-bottom: 10px;
+}
+
+#openai-settings,
+#claude-settings,
+#ollama-settings {
+    transition: all 0.3s ease;
+}
+
+.error-message {
+    background-color: #fff3f3;
+    border-left: 4px solid #dc3545;
+    padding: 10px;
+    margin: 10px 0;
+}
+
+.api-form .text-center a {
+    color: #007bff;
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+.api-form .text-center a:hover {
+    text-decoration: underline;
+}
+
+/* Model type indicator */
+.model-type-badge {
+    font-size: 0.8em;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 5px;
+}
+
+.model-type-openai {
+    background-color: #74aa9c;
+    color: white;
+}
+
+.model-type-claude {
+    background-color: #565869;
+    color: white;
+}
+
+.model-type-ollama {
+    background-color: #ff6b6b;
+    color: white;
+}
   

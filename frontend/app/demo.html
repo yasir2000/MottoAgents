@@ -20,9 +20,49 @@
                         <!-- Agents will be dynamically added here -->
                     </ul>
                     <div class="form-group p-4 api-form">
-                        <input type="text" class="form-control p-4 mb-2" id="openai-api-key" placeholder="Input your OpenAI api key here">
-                        <input type="text" class="form-control p-4" id="serp-api-key" placeholder="Input your SerpApi key here">
-                        <div class="text-center mt-2"><a href="https://serpapi.com/users/sign_up?plan=free" target="_blank">Get your SerpApi key</a></div>
+                        <select class="form-control p-3 mb-2" id="model-type">
+                            <option value="openai">OpenAI (GPT-4/3.5)</option>
+                            <option value="claude">Anthropic Claude</option>
+                            <option value="ollama">Ollama (Local Models)</option>
+                        </select>
+                        
+                        <!-- OpenAI Settings -->
+                        <div id="openai-settings">
+                            <input type="text" class="form-control p-3 mb-2" id="openai-api-key" placeholder="OpenAI API Key">
+                            <select class="form-control p-3 mb-2" id="openai-model">
+                                <option value="gpt-4">GPT-4</option>
+                                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                                <option value="gpt-4-turbo-preview">GPT-4 Turbo</option>
+                            </select>
+                        </div>
+
+                        <!-- Claude Settings -->
+                        <div id="claude-settings" style="display: none;">
+                            <input type="text" class="form-control p-3 mb-2" id="claude-api-key" placeholder="Claude API Key">
+                            <select class="form-control p-3 mb-2" id="claude-model">
+                                <option value="claude-2">Claude 2</option>
+                                <option value="claude-instant">Claude Instant</option>
+                            </select>
+                        </div>
+
+                        <!-- Ollama Settings -->
+                        <div id="ollama-settings" style="display: none;">
+                            <input type="text" class="form-control p-3 mb-2" id="ollama-host" placeholder="Ollama Host (default: http://localhost:11434)">
+                            <select class="form-control p-3 mb-2" id="ollama-model">
+                                <option value="llama2">Llama 2</option>
+                                <option value="codellama">CodeLlama</option>
+                                <option value="mistral">Mistral</option>
+                                <option value="neural-chat">Neural Chat</option>
+                                <option value="custom">Custom Model</option>
+                            </select>
+                        </div>
+
+                        <input type="text" class="form-control p-3 mb-2" id="serp-api-key" placeholder="SerpAPI Key (Optional for web search)">
+                        <div class="text-center mt-2">
+                            <a href="https://serpapi.com/users/sign_up?plan=free" target="_blank">Get SerpAPI key</a> |
+                            <a href="https://platform.openai.com/api-keys" target="_blank">Get OpenAI key</a> |
+                            <a href="https://console.anthropic.com/account/keys" target="_blank">Get Claude key</a>
+                        </div>
                     </div>
                 </div>
                 

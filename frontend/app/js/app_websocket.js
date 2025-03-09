@@ -492,71 +492,118 @@ function sendBtn() {
 sendIput.addEventListener('input', sendBtn);
 sendBtn();
 
-// handle sending messages in the chat
-async function sendMessage(exampleMessage) {
-    if(taskId != null) {
-        alert("Previous task is not completed. Please wait for the result or click STOP to end.");
-        return;
+// Model settings handling
+document.getElementById('model-type').addEventListener('change', function() {
+    const modelType = this.value;
+    const openaiSettings = document.getElementById('openai-settings');
+    const claudeSettings = document.getElementById('claude-settings');
+    const ollamaSettings = document.getElementById('ollama-settings');
+
+    // Hide all settings first
+    openaiSettings.style.display = 'none';
+    claudeSettings.style.display = 'none';
+    ollamaSettings.style.display = 'none';
+
+    // Show selected model settings
+    switch(modelType) {
+        case 'openai':
+            openaiSettings.style.display = 'block';
+            break;
+        case 'claude':
+            claudeSettings.style.display = 'block';
+            break;
+        case 'ollama':
+            ollamaSettings.style.display = 'block';
+            break;
     }
-    await clearChat();
-    const apiKey = document.getElementById('openai-api-key').value;
+});
+
+// Function to get current model settings
+function getModelSettings() {
+    const modelType = document.getElementById('model-type').value;
+    let settings = {
+        model_type: modelType
+    };
+
+    switch(modelType) {
+        case 'openai':
+            settings.api_key = document.getElementById('openai-api-key').value;
+            settings.model = document.getElementById('openai-model').value;
+            break;
+        case 'claude':
+            settings.api_key = document.getElementById('claude-api-key').value;
+            settings.model = document.getElementById('claude-model').value;
+            break;
+        case 'ollama':
+            settings.host = document.getElementById('ollama-host').value || 'http://localhost:11434';
+            settings.model = document.getElementById('ollama-model').value;
+            break;
+    }
+
+    // Add SerpAPI key if provided
     const serpApiKey = document.getElementById('serp-api-key').value;
-    const exampleMessagesID = document.getElementById("example-messages");
-    const intro = document.querySelector('.intro');
-
-    const sentMessage = document.getElementById('inputMessage').value;
-    const inputMessage = sentMessage || exampleMessage;
-
-    if ((!apiKey || apiKey.trim() === '' || apiKey === undefined) && (!serpApiKey || serpApiKey.trim() === '' || serpApiKey === undefined)) {
-        var colLeft = document.querySelector('.col-left');
-        colLeft.classList.toggle('show');
-        alert('Please enter both API keys');
-        return;
-    } else if (inputMessage === '') {
-        alert('Please enter a message');
-    } else {
-        localStorage.setItem("llm_api_key", apiKey.trim());
-        localStorage.setItem("serpapi_key", serpApiKey.trim());
-        // Get the input message and render into chat
-        const chatView = document.getElementById('chatView');
-
-        const messageDiv = document.createElement('div');
-
-        const sentMesage = document.createElement('p');
-        sentMesage.className = 'chat-bubble me-2 p-3';
-        sentMesage.textContent = inputMessage;
-
-        const senderImage = document.createElement('img');
-        senderImage.src = '../images/default.jpg';
-        senderImage.height = 50;
-        senderImage.width = 50;
-        senderImage.className = 'agent-avatar';
-
-        messageDiv.className = 'chat-user d-flex mb-2 mt-5 justify-content-end';
-        messageDiv.appendChild(sentMesage);
-        messageDiv.appendChild(senderImage);
-        chatView.appendChild(messageDiv);
-
-        ws.send(JSON.stringify({
-            "action": "run_task",
-            "data": {
-                "llm_api_key": apiKey,
-                "serpapi_key": serpApiKey,
-                "idea": inputMessage
-            }
-        }));
-
-        // Clear the input field
-        document.getElementById('inputMessage').value = '';
-        intro.style.display = 'none';
-        exampleMessagesID.style.display = 'none';
-
-        // show Stop button
-        interruptButton.textContent = 'Stop';
-        interruptButton.style.color = 'black';
-        interruptButton.style.display = '';
-        document.getElementById('calling-next-agent').style.display = 'block';
+    if (serpApiKey) {
+        settings.serpapi_key = serpApiKey;
     }
+
+    return settings;
+}
+
+// Update the sendMessage function to include model settings
+async function sendMessage() {
+    const input = document.getElementById('inputMessage');
+    const message = input.value.trim();
+    if (!message) return;
+
+    const modelSettings = getModelSettings();
+    
+    // Validate required settings
+    if (modelSettings.model_type === 'openai' && !modelSettings.api_key) {
+        alert('Please enter your OpenAI API key');
+        return;
+    }
+    if (modelSettings.model_type === 'claude' && !modelSettings.api_key) {
+        alert('Please enter your Claude API key');
+        return;
+    }
+
+    // Add message to chat
+    addUserMessage(message);
+    input.value = '';
+
+    try {
+        // Send message with model settings
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                message: message,
+                ...modelSettings
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        addBotMessage(data.response);
+    } catch (error) {
+        console.error('Error:', error);
+        addErrorMessage('Failed to send message. Please check your settings and try again.');
+    }
+}
+
+// Add error message display function
+function addErrorMessage(message) {
+    const chatView = document.getElementById('chatView');
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'message error-message';
+    errorDiv.innerHTML = `<p class="text-danger">${message}</p>`;
+    chatView.appendChild(errorDiv);
+    chatView.scrollTop = chatView.scrollHeight;
 }
 
 async function clearChat() {
