@@ -83,7 +83,8 @@ docker run -it --rm -p 7860:7860 "${IMAGE}:${VERSION}"
 - Open http://127.0.0.1:7860 in the browser.
 
 ## Contributing
-    MottoAgents deeply committed to the development of an advanced and innovative automated multi-agent environment designed specifically for large language models. Our mission is to push the boundaries of technology and create a system that fosters collaboration, efficiency, and groundbreaking advancements in this rapidly evolving field. As we work toward this ambitious goal, we are actively seeking enthusiastic and driven collaborators who share our passion for innovation and exploration. By joining us on this thrilling journey, you will have the opportunity to contribute to pioneering advancements in artificial intelligence and be part of a transformative initiative shaping the future of language model interactions.
+
+MottoAgents deeply committed to the development of an advanced and innovative automated multi-agent environment designed specifically for large language models. Our mission is to push the boundaries of technology and create a system that fosters collaboration, efficiency, and groundbreaking advancements in this rapidly evolving field. As we work toward this ambitious goal, we are actively seeking enthusiastic and driven collaborators who share our passion for innovation and exploration. By joining us on this thrilling journey, you will have the opportunity to contribute to pioneering advancements in artificial intelligence and be part of a transformative initiative shaping the future of language model interactions.
 
 
 ## How Can You Contribute?
