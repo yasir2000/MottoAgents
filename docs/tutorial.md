@@ -308,6 +308,273 @@ print(f"Memory size: {len(role._rc.memory.get())}")
    - Monitor resource usage
    - Profile performance bottlenecks
 
+## Supported Language Models
+
+### Available Models
+
+1. **OpenAI Models**
+   - GPT-4 (Recommended)
+     ```python
+     config.openai_api_model = "gpt-4"
+     ```
+   - GPT-3.5-turbo
+     ```python
+     config.openai_api_model = "gpt-3.5-turbo"
+     ```
+   - GPT-4-turbo
+     ```python
+     config.openai_api_model = "gpt-4-turbo-preview"
+     ```
+
+2. **Anthropic Models**
+   - Claude 2
+     ```python
+     config.claude_api_key = "your-claude-api-key"
+     config.model_type = "claude"
+     ```
+   - Claude Instant
+     ```python
+     config.model_type = "claude-instant"
+     ```
+
+3. **Azure OpenAI**
+   ```python
+   config.openai_api_type = "azure"
+   config.openai_api_base = "your-azure-endpoint"
+   config.openai_api_version = "2023-05-15"
+   config.deployment_id = "your-deployment-id"
+   ```
+
+4. **Ollama Local Models**
+   - Any Ollama-supported model
+     ```python
+     config.model_type = "ollama"
+     config.ollama_model = "llama2"  # or any other Ollama model
+     config.ollama_host = "http://localhost:11434"  # default Ollama host
+     ```
+   
+   Supported Ollama Models:
+   - Llama 2
+     ```python
+     config.ollama_model = "llama2"
+     ```
+   - CodeLlama
+     ```python
+     config.ollama_model = "codellama"
+     ```
+   - Mistral
+     ```python
+     config.ollama_model = "mistral"
+     ```
+   - Neural Chat
+     ```python
+     config.ollama_model = "neural-chat"
+     ```
+   - Other custom models
+     ```python
+     config.ollama_model = "your-custom-model"
+     ```
+
+### Model Configuration
+
+1. **Setting Default Model**
+```python
+from mottoagents.system.config import Config
+
+config = Config()
+config.openai_api_model = "gpt-4"  # or other model name
+```
+
+2. **Per-Role Model Configuration**
+```python
+engineer = Engineer(
+    name="Alex",
+    llm_api_key="your-api-key",
+    model_name="gpt-4"
+)
+```
+
+3. **Model Fallback Configuration**
+```python
+config.fallback_models = ["gpt-4", "gpt-3.5-turbo"]
+config.retry_on_failure = True
+```
+
+### Model-specific Settings
+
+1. **OpenAI Settings**
+```python
+config.openai_api_rpm = 3  # Rate limit (requests per minute)
+config.max_tokens_rsp = 2048  # Maximum response tokens
+```
+
+2. **Claude Settings**
+```python
+config.claude_max_tokens = 4096
+config.claude_temperature = 0.7
+```
+
+3. **Azure OpenAI Settings**
+```python
+config.azure_deployment_id = "deployment-name"
+config.azure_api_version = "2023-05-15"
+```
+
+4. **Ollama Settings**
+```python
+# Basic configuration
+config.ollama_host = "http://localhost:11434"
+config.ollama_model = "llama2"
+config.ollama_timeout = 30  # seconds
+
+# Model parameters
+config.ollama_parameters = {
+    "temperature": 0.7,
+    "top_p": 0.9,
+    "num_ctx": 4096,  # context window size
+    "repeat_penalty": 1.1
+}
+
+# Custom model configuration
+config.ollama_custom_model = {
+    "name": "your-custom-model",
+    "path": "/path/to/model/weights",
+    "parameters": {
+        "temperature": 0.8,
+        "top_p": 0.95
+    }
+}
+```
+
+### Example: Using Ollama Models
+
+1. **Basic Usage**
+```python
+from mottoagents.system.config import Config
+from mottoagents.roles import Engineer
+
+# Configure Ollama
+config = Config()
+config.model_type = "ollama"
+config.ollama_model = "codellama"
+
+# Create role with Ollama model
+engineer = Engineer(
+    name="LocalDev",
+    profile="Python Developer",
+    goal="Write efficient code",
+    constraints="Follow PEP8"
+)
+
+# Run tasks
+async def main():
+    result = await engineer.run("Create a simple web server")
+    print(result)
+```
+
+2. **Multiple Model Strategy with Ollama**
+```python
+class HybridRole(Role):
+    def __init__(self, name, **kwargs):
+        super().__init__(name, **kwargs)
+        self.model_strategy = {
+            "code_generation": {
+                "type": "ollama",
+                "model": "codellama"
+            },
+            "code_review": {
+                "type": "ollama",
+                "model": "llama2"
+            },
+            "system_design": {
+                "type": "openai",
+                "model": "gpt-4"
+            }
+        }
+
+    async def select_model(self, task_type):
+        strategy = self.model_strategy.get(task_type, {
+            "type": "ollama",
+            "model": "llama2"
+        })
+        
+        if strategy["type"] == "ollama":
+            config.model_type = "ollama"
+            config.ollama_model = strategy["model"]
+        else:
+            config.model_type = strategy["type"]
+            config.openai_api_model = strategy["model"]
+        
+        return strategy
+```
+
+3. **Custom Ollama Model Setup**
+```python
+# Define custom model
+config.ollama_custom_model = {
+    "name": "custom-python-assistant",
+    "base_model": "codellama",
+    "parameters": {
+        "temperature": 0.8,
+        "top_p": 0.95,
+        "num_ctx": 8192
+    }
+}
+
+# Use custom model
+config.ollama_model = "custom-python-assistant"
+```
+
+### Updated Model Comparison
+
+| Model | Best For | Context Length | Cost | Speed | Deployment |
+|-------|----------|---------------|------|-------|------------|
+| GPT-4 | Complex reasoning | 8K tokens | High | Moderate | Cloud |
+| GPT-3.5-turbo | Simple tasks | 4K tokens | Low | Fast | Cloud |
+| Claude 2 | Long-form content | 100K tokens | Medium | Moderate | Cloud |
+| Llama 2 (Ollama) | General tasks | 4K tokens | Free | Fast | Local |
+| CodeLlama (Ollama) | Code generation | 4K tokens | Free | Fast | Local |
+| Mistral (Ollama) | Balanced tasks | 8K tokens | Free | Fast | Local |
+
+### Best Practices for Ollama Usage
+
+1. **Model Selection**
+   - Use CodeLlama for code-related tasks
+   - Use Llama 2 for general tasks
+   - Use Mistral for balanced performance
+   - Consider custom fine-tuned models for specific domains
+
+2. **Performance Optimization**
+   - Run Ollama on GPU for better performance
+   - Adjust context window based on task requirements
+   - Use appropriate temperature settings
+   - Monitor system resources
+
+3. **Error Handling**
+```python
+try:
+    response = await llm.aask(prompt)
+except ConnectionError:
+    logger.error("Ollama server not running")
+    # Start Ollama server or fallback to cloud model
+except Exception as e:
+    logger.error(f"Ollama error: {str(e)}")
+    # Implement fallback logic
+```
+
+4. **Resource Management**
+```python
+# Monitor system resources
+import psutil
+
+def check_resources():
+    cpu_percent = psutil.cpu_percent()
+    memory_percent = psutil.virtual_memory().percent
+    if cpu_percent > 90 or memory_percent > 90:
+        logger.warning("System resources running high")
+        # Implement resource management strategy
+```
+
 ## Next Steps
 
 1. Explore the [examples](../examples) directory

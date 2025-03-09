@@ -45,7 +45,7 @@ python setup.py install
 
 ### Configuration
 
-- Configure your `OPENAI_API_KEY` in any of `config/key.yaml / config/config.yaml / env`
+- Configure your API keys and model settings in any of `config/key.yaml / config/config.yaml / env`
 - Priority order: `config/key.yaml > config/config.yaml > env`
 
 ```bash
@@ -53,20 +53,56 @@ python setup.py install
 cp config/config.yaml config/key.yaml
 ```
 
-| Variable Name                              | config/key.yaml                           | env                                             |
-| ------------------------------------------ | ----------------------------------------- | ----------------------------------------------- |
-| OPENAI_API_KEY # Replace with your own key | OPENAI_API_KEY: "sk-..."                  | export OPENAI_API_KEY="sk-..."                  |
-| OPENAI_API_BASE # Optional                 | OPENAI_API_BASE: "https://<YOUR_SITE>/v1" | export OPENAI_API_BASE="https://<YOUR_SITE>/v1" |
+| Variable Name | config/key.yaml | env |
+| ------------ | --------------- | --- |
+| OPENAI_API_KEY # Replace with your own key | OPENAI_API_KEY: "sk-..." | export OPENAI_API_KEY="sk-..." |
+| OPENAI_API_BASE # Optional | OPENAI_API_BASE: "https://<YOUR_SITE>/v1" | export OPENAI_API_BASE="https://<YOUR_SITE>/v1" |
+| MODEL_TYPE # Choose model type | MODEL_TYPE: "ollama" | export MODEL_TYPE="ollama" |
+| OLLAMA_HOST # Ollama server address | OLLAMA_HOST: "http://localhost:11434" | export OLLAMA_HOST="http://localhost:11434" |
+| OLLAMA_MODEL # Ollama model name | OLLAMA_MODEL: "llama2" | export OLLAMA_MODEL="llama2" |
 
 ### Usage
-- Commandline mode:
+
+#### Using OpenAI Models
 ```python
 python main.py --mode commandline --llm_api_key YOUR_OPENAI_API_KEY --serpapi_key YOUR_SERPAPI_KEY --idea "Is LK-99 really a room temperature superconducting material?"
 ```
-- Websocket service mode:
+
+#### Using Ollama Local Models
+1. First, install and start Ollama server following instructions at [Ollama.ai](https://ollama.ai)
+2. Pull your desired model:
+```bash
+ollama pull llama2  # or codellama, mistral, etc.
+```
+3. Run MottoAgents with Ollama:
+```python
+python main.py --mode commandline --model_type ollama --ollama_model llama2 --idea "Is LK-99 really a room temperature superconducting material?"
+```
+
+#### Websocket Service Mode
 ```python
 python main.py --mode service --host "127.0.0.1" --port 9000
 ```
+
+### Supported Models
+
+MottoAgents supports multiple language models:
+
+1. **OpenAI Models**
+   - GPT-4
+   - GPT-3.5-turbo
+   - GPT-4-turbo
+
+2. **Anthropic Models**
+   - Claude 2
+   - Claude Instant
+
+3. **Ollama Local Models**
+   - Llama 2
+   - CodeLlama
+   - Mistral
+   - Neural Chat
+   - Custom models
 
 ### Docker
 - Build docker image:

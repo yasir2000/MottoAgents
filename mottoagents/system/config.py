@@ -76,6 +76,8 @@ class Config(metaclass=Singleton):
         
         # Load configuration values
         self.global_proxy = self._get("GLOBAL_PROXY")
+        
+        # OpenAI settings
         self.openai_api_key = self._get("OPENAI_API_KEY")
         self.openai_api_base = self._get("OPENAI_API_BASE")
         self.openai_proxy = self._get("OPENAI_PROXY")
@@ -86,18 +88,33 @@ class Config(metaclass=Singleton):
         self.max_tokens_rsp = self._get("MAX_TOKENS", 2048)
         self.deployment_id = self._get("DEPLOYMENT_ID")
 
-        # API keys for various services
+        # Anthropic settings
         self.claude_api_key = self._get('Anthropic_API_KEY')
+        
+        # Search engine settings
         self.serpapi_api_key = self._get("SERPAPI_API_KEY")
         self.serper_api_key = self._get("SERPER_API_KEY")
         self.google_api_key = self._get("GOOGLE_API_KEY")
         self.google_cse_id = self._get("GOOGLE_CSE_ID")
-        
-        # Service configurations
         self.search_engine = self._get("SEARCH_ENGINE", SearchEngineType.SERPAPI_GOOGLE)
+        
+        # Browser settings
         self.web_browser_engine = WebBrowserEngineType(self._get("WEB_BROWSER_ENGINE", "playwright"))
         self.playwright_browser_type = self._get("PLAYWRIGHT_BROWSER_TYPE", "chromium")
         self.selenium_browser_type = self._get("SELENIUM_BROWSER_TYPE", "chrome")
+        
+        # Ollama settings
+        self.model_type = self._get("MODEL_TYPE", "openai").lower()
+        self.ollama_host = self._get("OLLAMA_HOST", "http://localhost:11434")
+        self.ollama_model = self._get("OLLAMA_MODEL", "llama2")
+        self.ollama_timeout = self._get("OLLAMA_TIMEOUT", 30)
+        self.ollama_parameters = self._get("OLLAMA_PARAMETERS", {
+            "temperature": 0.7,
+            "top_p": 0.9,
+            "num_ctx": 4096,
+            "repeat_penalty": 1.1
+        })
+        self.ollama_custom_model = self._get("OLLAMA_CUSTOM_MODEL", {})
         
         # System settings
         self.long_term_memory = self._get('LONG_TERM_MEMORY', False)
