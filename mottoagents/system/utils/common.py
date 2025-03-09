@@ -5,6 +5,9 @@
 @Author  : alexanderwu
 @File    : common.py
 @From    : https://github.com/geekan/MetaGPT/blob/main/metagpt/utils/common.py
+
+This module provides common utility functions and classes used throughout the MottoAgents project.
+It includes tools for command checking, output parsing, and code parsing.
 """
 import ast
 import inspect
@@ -16,9 +19,13 @@ from mottoagents.system.logs import logger
 
 
 def check_cmd_exists(command) -> int:
-    """ 检查命令是否存在
-    :param command: 待检查的命令
-    :return: 如果命令存在，返回0，如果不存在，返回非0
+    """Check if a shell command exists in the system.
+    
+    Args:
+        command (str): The command to check for existence
+        
+    Returns:
+        int: Returns 0 if the command exists, non-zero otherwise
     """
     check_command = 'command -v ' + command + ' >/dev/null 2>&1 || { echo >&2 "no mermaid"; exit 1; }'
     result = os.system(check_command)
@@ -26,9 +33,22 @@ def check_cmd_exists(command) -> int:
 
 
 class OutputParser:
+    """A utility class for parsing different types of output formats.
+    
+    This class provides methods to parse blocks of text, code snippets,
+    and structured data from various output formats.
+    """
 
     @classmethod
     def parse_blocks(cls, text: str):
+        """Parse text into blocks based on '##' delimiters.
+        
+        Args:
+            text (str): The text to parse into blocks
+            
+        Returns:
+            dict: A dictionary mapping block titles to their content
+        """
         # First split the text into different blocks based on "##"
         blocks = text.split("##")
 
@@ -41,7 +61,7 @@ class OutputParser:
             if block.strip() != "":
                 # Split the block's title and content, and remove whitespace from both ends
                 block_title, block_content = block.split("\n", 1)
-                # LLM might make mistakes, fix it here
+                # Handle potential LLM formatting issues
                 if block_title[-1] == ":":
                     block_title = block_title[:-1]
                 block_dict[block_title.strip()] = block_content.strip()
@@ -50,6 +70,18 @@ class OutputParser:
 
     @classmethod
     def parse_code(cls, text: str, lang: str = "") -> str:
+        """Extract code blocks from text.
+        
+        Args:
+            text (str): The text containing code blocks
+            lang (str): The programming language of the code block
+            
+        Returns:
+            str: The extracted code
+            
+        Raises:
+            Exception: If no code block is found
+        """
         pattern = rf'```{lang}.*?\s+(.*?)```'
         match = re.search(pattern, text, re.DOTALL)
         if match:
@@ -60,21 +92,36 @@ class OutputParser:
 
     @classmethod
     def parse_str(cls, text: str):
+        """Parse a string value from text.
+        
+        Args:
+            text (str): The text to parse
+            
+        Returns:
+            str: The parsed string value with quotes and whitespace removed
+        """
         text = text.split("=")[-1]
         text = text.strip().strip("'").strip("\"")
         return text
 
     @classmethod
     def parse_file_list(cls, text: str) -> list[str]:
-        # Regular expression pattern to find the tasks list.
+        """Parse a list of files from text.
+        
+        Args:
+            text (str): The text containing a list of files
+            
+        Returns:
+            list[str]: The list of parsed file names
+        """
+        # Regular expression pattern to find the tasks list
         pattern = r'\s*(.*=.*)?(\[.*\])'
 
-        # Extract tasks list string using regex.
+        # Extract tasks list string using regex
         match = re.search(pattern, text, re.DOTALL)
         if match:
             tasks_list_str = match.group(2)
-
-            # Convert string representation of list to a Python list using ast.literal_eval.
+            # Convert string representation of list to a Python list
             tasks = ast.literal_eval(tasks_list_str)
         else:
             tasks = text.split("\n")

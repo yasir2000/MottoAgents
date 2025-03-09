@@ -4,6 +4,10 @@
 @Time    : 2023/5/11 14:43
 @Author  : alexanderwu
 @From    : https://github.com/geekan/MetaGPT/blob/main/metagpt/roles/engineer.py
+
+This module implements the Engineer role, which is responsible for writing code
+based on system designs and requirements. The Engineer can work independently
+or collaborate with other roles to implement software solutions.
 """
 import asyncio
 import shutil
@@ -19,6 +23,15 @@ from mottoagents.roles import Role
 from mottoagents.actions import WriteCode, WriteCodeReview, WriteTasks, WriteDesign
 
 async def gather_ordered_k(coros, k) -> list:
+    """Execute coroutines with a maximum concurrency of k, preserving order.
+    
+    Args:
+        coros: List of coroutines to execute
+        k: Maximum number of concurrent coroutines
+        
+    Returns:
+        list: Results in the same order as input coroutines
+    """
     tasks = OrderedDict()
     results = [None] * len(coros)
     done_queue = asyncio.Queue()
@@ -46,9 +59,26 @@ async def gather_ordered_k(coros, k) -> list:
 
 
 class Engineer(Role):
+    """Engineer role responsible for implementing code based on designs.
+    
+    The Engineer can write code, perform code reviews, and work with other roles
+    to implement software solutions based on requirements and designs.
+    """
+
     def __init__(self, name="Alex", profile="Engineer", goal="Write elegant, readable, extensible, efficient code",
                  constraints="The code you write should conform to code standard like PEP8, be modular, easy to read and maintain",
                  n_borg=1, use_code_review=False, **kwargs):
+        """Initialize Engineer role.
+        
+        Args:
+            name (str): Engineer's name
+            profile (str): Professional profile
+            goal (str): Primary objective
+            constraints (str): Coding standards and constraints
+            n_borg (int): Number of concurrent tasks
+            use_code_review (bool): Whether to perform code reviews
+            **kwargs: Additional arguments
+        """
         super().__init__(name, profile, goal, constraints, **kwargs)
         self._init_actions([WriteCode])
         self.use_code_review = use_code_review
@@ -59,22 +89,51 @@ class Engineer(Role):
         self.n_borg = n_borg
 
     @classmethod
-    def parse_tasks(self, task_msg: Message) -> list[str]:
+    def parse_tasks(cls, task_msg: Message) -> list[str]:
+        """Parse task list from a message.
+        
+        Args:
+            task_msg (Message): Message containing task information
+            
+        Returns:
+            list[str]: List of tasks to be performed
+        """
         if task_msg.instruct_content:
             return task_msg.instruct_content.dict().get("Task list")
         return CodeParser.parse_file_list(block="Task list", text=task_msg.content)
 
     @classmethod
-    def parse_code(self, code_text: str) -> str:
+    def parse_code(cls, code_text: str) -> str:
+        """Parse code from text.
+        
+        Args:
+            code_text (str): Text containing code
+            
+        Returns:
+            str: Extracted code
+        """
         return CodeParser.parse_code(block="", text=code_text)
 
     @classmethod
     def parse_workspace(cls, system_design_msg: Message) -> str:
+        """Parse workspace name from system design message.
+        
+        Args:
+            system_design_msg (Message): Message containing system design
+            
+        Returns:
+            str: Workspace name
+        """
         if system_design_msg.instruct_content:
             return system_design_msg.instruct_content.dict().get("Python package name").strip().strip("'").strip("\"")
         return CodeParser.parse_str(block="Python package name", text=system_design_msg.content)
 
     def get_workspace(self) -> Path:
+        """Get the workspace directory path.
+        
+        Returns:
+            Path: Path to the workspace directory
+        """
         msg = self._rc.memory.get_by_action(WriteDesign)[-1]
         if not msg:
             return WORKSPACE_ROOT / 'src'
@@ -83,11 +142,13 @@ class Engineer(Role):
         return WORKSPACE_ROOT / workspace / workspace
 
     def recreate_workspace(self):
+        """Recreate the workspace directory, clearing it if it exists."""
         workspace = self.get_workspace()
         try:
             shutil.rmtree(workspace)
         except FileNotFoundError:
-            pass  # Directory doesn't exist, but we don't care
+            # Directory doesn't exist, but we don't care
+            pass
         workspace.mkdir(parents=True, exist_ok=True)
 
     def write_file(self, filename: str, code: str):

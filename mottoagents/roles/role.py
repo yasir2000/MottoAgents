@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# From: https://github.com/geekan/MetaGPT/blob/main/metagpt/roles/role.py
+"""
+From: https://github.com/geekan/MetaGPT/blob/main/metagpt/roles/role.py
+
+This module implements the base Role class and related components for the MottoAgents system.
+Roles represent different AI agents with specific capabilities and responsibilities.
+"""
 from __future__ import annotations
 
 from typing import Iterable, Type
@@ -44,7 +49,15 @@ ROLE_TEMPLATE = """Your response should be based on the previous conversation hi
 
 
 class RoleSetting(BaseModel):
-    """角色设定"""
+    """Settings that define a role's characteristics and behavior.
+    
+    Attributes:
+        name (str): The name of the role
+        profile (str): The role's professional profile/title
+        goal (str): The role's primary objective
+        constraints (str): Constraints or rules the role must follow
+        desc (str): A detailed description of the role
+    """
     name: str
     profile: str
     goal: str
@@ -59,7 +72,16 @@ class RoleSetting(BaseModel):
 
 
 class RoleContext(BaseModel):
-    """角色运行时上下文"""
+    """Runtime context for a role, maintaining state and memory.
+    
+    Attributes:
+        env (Environment): The environment the role operates in
+        memory (Memory): Short-term memory storage
+        long_term_memory (LongTermMemory): Persistent memory storage
+        state (int): Current state of the role
+        todo (Action): Current action to be performed
+        watch (set[Type[Action]]): Set of action types to monitor
+    """
     env: 'Environment' = Field(default=None)
     memory: Memory = Field(default_factory=Memory)
     long_term_memory: LongTermMemory = Field(default_factory=LongTermMemory)
@@ -71,24 +93,43 @@ class RoleContext(BaseModel):
         arbitrary_types_allowed = True
 
     def check(self, role_id: str):
+        """Check and initialize long-term memory if enabled."""
         if hasattr(CONFIG, "long_term_memory") and CONFIG.long_term_memory:
             self.long_term_memory.recover_memory(role_id, self)
-            self.memory = self.long_term_memory  # use memory to act as long_term_memory for unify operation
+            # Use memory to act as long_term_memory for unified operation
+            self.memory = self.long_term_memory
 
     @property
     def important_memory(self) -> list[Message]:
-        """获得关注动作对应的信息"""
+        """Get messages related to watched actions."""
         return self.memory.get_by_actions(self.watch)
 
     @property
     def history(self) -> list[Message]:
+        """Get all historical messages."""
         return self.memory.get()
 
 
 class Role:
-    """角色/代理"""
+    """Base class for AI agent roles in the system.
+    
+    A Role represents an AI agent with specific capabilities, goals, and behaviors.
+    It can interact with its environment, maintain state, and perform actions.
+    """
 
     def __init__(self, name="", profile="", goal="", constraints="", desc="", proxy="", llm_api_key="", serpapi_api_key=""):
+        """Initialize a new Role instance.
+        
+        Args:
+            name (str): Role name
+            profile (str): Role's professional profile
+            goal (str): Role's objective
+            constraints (str): Role's constraints
+            desc (str): Role description
+            proxy (str): Proxy configuration
+            llm_api_key (str): API key for language model
+            serpapi_api_key (str): API key for search engine
+        """
         self._llm = LLM(proxy, llm_api_key)
         self._setting = RoleSetting(name=name, profile=profile, goal=goal, constraints=constraints, desc=desc)
         self._states = []
