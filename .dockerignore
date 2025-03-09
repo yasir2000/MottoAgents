@@ -1,0 +1,102 @@
+# Git
+.git
+.gitignore
+.gitattributes
+.github
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.py[cod]
+*$py.class
+.pytest_cache
+.coverage
+htmlcov/
+.tox/
+.nox/
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.mypy_cache/
+.pytest_cache/
+.hypothesis/
+
+# Virtual Environment
+.env
+.venv
+env/
+venv/
+ENV/
+.python-version
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*.swn
+*~
+.project
+.settings
+.classpath
+
+# Build
+*.egg-info/
+dist/
+build/
+wheels/
+*.whl
+*.egg
+
+# Docker
+docker-compose*.yml
+Dockerfile*
+.docker
+.dockerignore
+
+# Documentation
+docs/
+*.md
+!README.md
+*.rst
+*.txt
+!requirements*.txt
+
+# Test
+tests/
+test/
+testing/
+pytest.ini
+.pytest_cache/
+
+# Development
+*.bak
+*.tmp
+*.temp
+.env*
+!.env.example
+*.local
+.DS_Store
+Thumbs.db
+
+# Misc
+*.zip
+*.tar.gz
+*.tar
+*.rar
+*.7z
+*.log
+*.sql
+*.sqlite
+*.db
+tmp/
+temp/
+.git/
+.svn/
+node_modules/ 

@@ -1,4 +1,4 @@
-matplotlib==3.8.0
+matplotlib==3.7.2
 matplotlib-inline==0.1.6
 abstract_singleton==1.0.1
 aiofiles==23.2.1

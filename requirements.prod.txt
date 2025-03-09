@@ -1,0 +1,19 @@
+# Core dependencies
+matplotlib==3.7.2
+aiohttp==3.8.4
+fastapi==0.103.1
+langchain==0.0.231
+openai==0.27.2
+pydantic==1.10.7
+python-dotenv==1.0.0
+uvicorn==0.23.2
+websockets==11.0.3
+
+# Frontend dependencies
+gradio==3.44.4
+gradio_client==0.5.1
+
+# Utilities
+loguru==0.6.0
+PyYAML==6.0
+requests==2.30.0 
