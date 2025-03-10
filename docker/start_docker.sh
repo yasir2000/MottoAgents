@@ -1,39 +1,53 @@
 #!/bin/bash
-set -e
 
+# Configuration
 IMAGE="yasir2000/mottoagents:1.0"
 CONTAINER_NAME="mottoagents"
 PORT=7860
+MAX_RETRIES=60
 
-# Check if the image exists
-if ! docker image inspect $IMAGE >/dev/null 2>&1; then
-    echo "Error: Image $IMAGE not found. Please run build.sh first."
+# Check Docker is running
+if ! docker info >/dev/null 2>&1; then
+    echo "Error: Docker is not running"
     exit 1
 fi
 
-# Remove any existing container with the same name
+# Check if the image exists
+if ! docker image inspect $IMAGE >/dev/null 2>&1; then
+    echo "Error: Image $IMAGE not found"
+    exit 1
+fi
+
+# Stop and remove existing container
 docker rm -f $CONTAINER_NAME 2>/dev/null || true
 
-# Run the container
-echo "Starting MottoAgents container..."
+# Start container
+echo "Starting container..."
 docker run -d \
     --name $CONTAINER_NAME \
     -p $PORT:$PORT \
     --restart unless-stopped \
     $IMAGE
 
-# Wait for container to be healthy
-echo "Waiting for container to be ready..."
-for i in {1..30}; do
+# Check if container started
+if ! docker ps | grep -q $CONTAINER_NAME; then
+    echo "Error: Container failed to start"
+    docker logs $CONTAINER_NAME
+    exit 1
+fi
+
+# Wait for service
+echo "Waiting for service..."
+for i in $(seq 1 $MAX_RETRIES); do
     if curl -s http://localhost:$PORT >/dev/null; then
-        echo "Container is ready! Access the application at http://localhost:$PORT"
-        docker logs -f $CONTAINER_NAME
+        echo "Service is up at http://localhost:$PORT"
+        docker logs $CONTAINER_NAME
         exit 0
     fi
-    echo "Waiting for service to start... ($i/30)"
     sleep 1
+    echo "Attempt $i/$MAX_RETRIES..."
 done
 
-echo "Error: Service failed to start within 30 seconds"
+echo "Service failed to respond"
 docker logs $CONTAINER_NAME
 exit 1
