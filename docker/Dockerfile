@@ -1,7 +1,7 @@
 FROM tiangolo/uwsgi-nginx:python3.10
 
-ENV LISTEN_PORT=7860 \
-	USE_HTML_ROOT=/app/mottoagents/frontend/app
+ENV LISTEN_PORT 7860
+ENV USE_HTML_ROOT /app/mottoagents/frontend/app
 
 EXPOSE 7860
 

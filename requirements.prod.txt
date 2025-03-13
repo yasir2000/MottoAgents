@@ -16,4 +16,7 @@ gradio_client==0.5.1
 # Utilities
 loguru==0.6.0
 PyYAML==6.0
-requests==2.30.0 
+requests==2.30.0
+
+flask>=2.0.0
+uwsgi>=2.0.20

@@ -233,6 +233,104 @@ class Memory:
     def get_by_actions(self, actions)
 ```
 
+## Business Motivation Model Integration
+
+### BMM-Enhanced Role System
+The role system now incorporates BMM concepts for business-aligned decision making:
+
+```python
+class BMMRole(Role):
+    def __init__(self, name, profile, **kwargs):
+        super().__init__(name, profile)
+        self.bmm_context = {
+            "ends": {
+                "vision": kwargs.get("vision", ""),
+                "goals": kwargs.get("goals", []),
+                "objectives": kwargs.get("objectives", {})
+            },
+            "means": {
+                "mission": kwargs.get("mission", ""),
+                "strategy": kwargs.get("strategy", []),
+                "tactics": kwargs.get("tactics", {})
+            },
+            "influencers": {
+                "internal": kwargs.get("internal_influences", []),
+                "external": kwargs.get("external_influences", [])
+            },
+            "assessments": {
+                "swot": kwargs.get("swot_analysis", {}),
+                "evaluations": kwargs.get("evaluations", [])
+            },
+            "directives": {
+                "policies": kwargs.get("business_policies", []),
+                "rules": kwargs.get("business_rules", {})
+            }
+        }
+```
+
+### BMM Action Framework
+Actions are now context-aware of business motivations:
+
+```python
+class BMMAction(Action):
+    async def evaluate_context(self, context):
+        """Evaluate action against BMM directives"""
+        policies = self._rc.bmm_context["directives"]["policies"]
+        rules = self._rc.bmm_context["directives"]["rules"]
+        return self.validate_compliance(context, policies, rules)
+
+    async def align_with_strategy(self, action_plan):
+        """Ensure action aligns with business strategy"""
+        strategy = self._rc.bmm_context["means"]["strategy"]
+        return self.validate_strategic_fit(action_plan, strategy)
+```
+
+### BMM-Aware Memory System
+Enhanced memory system with business context awareness:
+
+```python
+class BMMMemory(Memory):
+    def add_with_context(self, message, bmm_context):
+        """Store memory with BMM context"""
+        enriched_message = self.enrich_with_bmm(message, bmm_context)
+        self.add(enriched_message)
+
+    def get_by_objective(self, objective_id):
+        """Retrieve memories related to specific objectives"""
+        return self.filter_by_bmm_context("objectives", objective_id)
+```
+
+## Business Motivation Model (BMM) Architecture
+
+### Core Components
+
+1. **BMM Context**
+   - Business vision and goals
+   - Strategy and tactics
+   - Policies and rules
+   - Influencer assessment
+
+2. **Business Architect Role**
+   - Strategy development
+   - Policy enforcement
+   - Objective tracking
+   - Context analysis
+
+3. **BMM Memory System**
+   - Context-aware storage
+   - Strategic indexing
+   - Objective-based retrieval
+
+### Integration Flow
+```mermaid
+graph TD
+    A[Business Architect] -->|Defines| B[Business Context]
+    B -->|Influences| C[Role Behavior]
+    C -->|Validates| D[Policy Engine]
+    D -->|Enforces| E[Business Rules]
+    E -->|Updates| F[BMM Memory]
+```
+
 ## Setup and Installation
 
 1. Clone the repository
@@ -291,4 +389,4 @@ This project is licensed under the terms specified in the LICENSE file.
 
 ---
 
-For more information, please refer to the individual component documentation or contact the project maintainers. 
+For more information, please refer to the individual component documentation or contact the project maintainers.

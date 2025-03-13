@@ -17,7 +17,7 @@ with open(path.join(here, "requirements.txt"), encoding="utf-8") as f:
 
 setup(
     name="mottoagents",
-    version="0.1",
+    version="1.0.0",
     description="The Automatic Agents Generation Framework",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -28,5 +28,8 @@ setup(
     keywords="mottoagents multi-agent agent-generation gpt llm",
     packages=find_packages(exclude=["contrib", "docs", "examples"]),
     python_requires=">=3.9",
-    install_requires=requirements,
+    install_requires=[
+        'flask>=2.0.0',
+        'uwsgi>=2.0.20',
+    ],
 )

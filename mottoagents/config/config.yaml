@@ -1,0 +1,46 @@
+# ...existing code...
+
+# BMM Configuration
+bmm:
+  enable_validation: true
+  strategy_alignment_threshold: 0.7
+  policy_compliance_mode: "strict"
+  objective_tracking: true
+  
+  # Default business context
+  default_context:
+    vision: "Build intelligent and autonomous AI systems"
+    mission: "Provide flexible and powerful AI agent frameworks"
+    core_values:
+      - "Innovation"
+      - "Reliability"
+      - "Security"
+
+  maturity_levels:
+    1: "Initial BMM Implementation"
+    2: "Managed BMM Process"
+    3: "Defined BMM Architecture"
+    4: "Quantitatively Managed BMM"
+    5: "Optimizing BMM"
+    
+  directive_validation:
+    policy_weight: 0.4
+    rule_weight: 0.3
+    goal_alignment_weight: 0.3
+    minimum_compliance_score: 0.8
+    
+  assessment_configuration:
+    swot_refresh_interval: 30  # days
+    impact_threshold: 0.6
+    confidence_threshold: 0.7
+
+business_architect:
+  evaluation_metrics:
+    strategy_alignment_threshold: 0.8
+    policy_compliance_threshold: 0.9
+    objective_tracking_interval: 7  # days
+  
+  analysis_settings:
+    swot_update_frequency: 30  # days
+    context_evaluation_depth: "detailed"
+    influencer_analysis_scope: "comprehensive"

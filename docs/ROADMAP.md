@@ -15,8 +15,17 @@ This document outlines the planned development roadmap for the MottoAgents proje
 ## Short-term Goals (Next 3 Months)
 
 ### 1. Enhanced Role System (v1.1.0)
-- [ ] Role composition and inheritance
-- [ ] Dynamic role loading
+- [x] Role composition and inheritance
+- [x] Dynamic role loading
+- [x] BMM Integration
+  - [x] Business Architect role
+  - [x] Policy enforcement
+  - [x] Strategy alignment
+  - [x] Context awareness
+- [ ] Advanced BMM Features
+  - [ ] AI-driven policy generation
+  - [ ] Automated strategy optimization
+  - [ ] Dynamic objective tracking
 - [ ] Role state persistence
 - [ ] Role collaboration patterns
 - [ ] Role performance metrics
