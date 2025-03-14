@@ -44,3 +44,52 @@ business_architect:
     swot_update_frequency: 30  # days
     context_evaluation_depth: "detailed"
     influencer_analysis_scope: "comprehensive"
+
+mcp:
+  enable_validation: true
+  control_level: "moderate"
+  safety_threshold: 0.8
+  
+  # Model control settings
+  model_settings:
+    gpt4:
+      max_tokens: 8192
+      temperature: 0.7
+      top_p: 0.95
+      rate_limit: 100
+    llama2:
+      max_tokens: 4096
+      temperature: 0.8
+      context_window: 4096
+    codellama:
+      max_tokens: 4096
+      temperature: 0.5
+      specialized_tasks: ["code_generation", "code_analysis"]
+  
+  # Safety controls
+  safety_controls:
+    content_filtering: 
+      enabled: true
+      threshold: 0.9
+      blocked_categories: ["harmful", "malicious"]
+    rate_limiting:
+      enabled: true
+      requests_per_minute: 50
+      burst_limit: 100
+    resource_monitoring:
+      enabled: true
+      max_memory_usage: "8GB"
+      max_cpu_usage: 80
+  
+  # Access controls
+  access_controls:
+    enterprise:
+      allowed_models: ["gpt-4", "claude-2"]
+      restricted_actions: ["system_modification"]
+      require_approval: true
+      audit_logging: true
+    
+    development:
+      allowed_models: ["gpt-3.5-turbo", "llama2"]
+      restricted_actions: ["production_deployment"]
+      require_approval: false

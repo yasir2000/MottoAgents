@@ -2,6 +2,7 @@ from typing import Dict, List, Optional
 from .base import Role
 from ..core.bmm import BMMContext, Assessment, InfluencerType
 from ..actions import Action
+from ..core.mcp import MCPPolicy, MCPControlLevel
 
 class BusinessArchitect(Role):
     """Business Architect role responsible for BMM implementation and oversight"""
@@ -9,6 +10,7 @@ class BusinessArchitect(Role):
     def __init__(self, name: str = "BusinessArchitect", **kwargs):
         super().__init__(name=name, profile="Business Architecture", **kwargs)
         self._init_bmm_capabilities()
+        self._init_mcp_policies()
 
     def _init_bmm_capabilities(self):
         """Initialize BMM-specific capabilities"""
@@ -23,6 +25,13 @@ class BusinessArchitect(Role):
             "manage_influencers": self.manage_influencers,
             "enforce_directives": self.enforce_directives,
             "conduct_assessment": self.conduct_assessment
+        }
+
+    def _init_mcp_policies(self):
+        """Initialize MCP policies"""
+        self.mcp_policies = {
+            "model_usage": self._create_model_usage_policy(),
+            "safety": self._create_safety_policy()
         }
 
     async def analyze_business_context(self, context: Dict) -> Dict:
@@ -111,6 +120,17 @@ class BusinessArchitect(Role):
                 "policies": policies,
                 "rules": rules
             }
+        }
+
+    async def enforce_mcp_controls(self, context: Dict) -> Dict:
+        """Enforce MCP controls"""
+        policy = await self._derive_mcp_policy(context)
+        validation = await self._validate_mcp_compliance(context, policy)
+        
+        return {
+            "status": "success" if validation else "mcp_violation",
+            "compliance": validation,
+            "policy": policy
         }
 
     async def _validate_directive_chain(
